@@ -39,9 +39,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
   ];
   bool isLast = false;
   void submit() {
-    print('hiilooo');
     CacheHelper.saveData(key: 'onboarding', value: true).then((value) {
-      print(CacheHelper.getData(key: 'onboarding'));
       if (value) {
         navigateAndFinish(context, LoginScreen());
       }

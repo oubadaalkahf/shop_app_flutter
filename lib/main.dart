@@ -20,7 +20,6 @@ void main() async {
   bool onBoarding = false;
   try {
     onBoarding = CacheHelper.getData(key: 'onboarding');
-    print(onBoarding);
   } catch (e) {
     print(e);
   }
