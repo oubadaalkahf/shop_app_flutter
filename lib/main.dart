@@ -12,6 +12,7 @@ import 'package:shop_app/screens/login/cubit/cubit_observer.dart';
 import 'package:shop_app/screens/register/registerScreen.dart';
 import 'package:shop_app/screens/onBoarding/OnBoardingScreen.dart';
 import 'package:shop_app/shared/colors.dart';
+import 'package:shop_app/shared/constants.dart';
 
 import 'network/remote/dio_helper.dart';
 
@@ -22,7 +23,6 @@ void main() async {
   Bloc.observer = MyBlocObserver();
   bool onBoarding = false;
   Widget widget;
-  String token = '';
   try {
     onBoarding = CacheHelper.getData(key: 'onboarding');
     token = CacheHelper.getData(key: 'token');
@@ -51,7 +51,9 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
-        providers: [BlocProvider(create: (context) => ShopCubit())],
+        providers: [
+          BlocProvider(create: (context) => ShopCubit()..getHomeData())
+        ],
         child: BlocConsumer<ShopCubit, ShopStates>(
           listener: (context, state) {},
           builder: (context, state) {
