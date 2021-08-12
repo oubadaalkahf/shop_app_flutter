@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 
-class HomeShopLayout extends StatelessWidget {
+class SearchScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('JUMIA'),
+      appBar: AppBar(),
+      body: Center(
+        child: Text('Search Screen'),
       ),
     );
   }
