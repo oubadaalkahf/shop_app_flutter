@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_conditional_rendering/conditional.dart';
+import 'package:shop_app/models/categoriesModel.dart';
 import 'package:shop_app/models/home_model.dart';
 import 'package:shop_app/screens/cubit/cubit.dart';
 import 'package:shop_app/screens/cubit/states.dart';
@@ -17,9 +18,11 @@ class ProductsScreen extends StatelessWidget {
         return Conditional.single(
             context: context,
             conditionBuilder: (context) =>
-                ShopCubit.get(context).homeModel != null,
-            widgetBuilder: (context) =>
-                productsBuilder(ShopCubit.get(context).homeModel!),
+                ShopCubit.get(context).homeModel != null &&
+                ShopCubit.get(context).categoriesModel != null,
+            widgetBuilder: (context) => builderWidget(
+                ShopCubit.get(context).homeModel!,
+                ShopCubit.get(context).categoriesModel!),
             fallbackBuilder: (context) => Center(
                   child: CircularProgressIndicator(),
                 ));
@@ -27,9 +30,11 @@ class ProductsScreen extends StatelessWidget {
     );
   }
 
-  Widget productsBuilder(HomeModel model) => SingleChildScrollView(
+  Widget builderWidget(HomeModel model, CategoriesModel categorieModel) =>
+      SingleChildScrollView(
         physics: BouncingScrollPhysics(),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             CarouselSlider(
                 items: model.data.banners
@@ -53,6 +58,47 @@ class ProductsScreen extends StatelessWidget {
                 )),
             SizedBox(
               height: 10.0,
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Categories',
+                    style: TextStyle(
+                      fontSize: 30.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Container(
+                    height: 100.0,
+                    child: ListView.separated(
+                      scrollDirection: Axis.horizontal,
+                      physics: BouncingScrollPhysics(),
+                      itemBuilder: (context, index) =>
+                          buildCategoryItem(categorieModel.data.data[index]),
+                      separatorBuilder: (context, index) => SizedBox(
+                        width: 10.0,
+                      ),
+                      itemCount: categorieModel.data.data.length,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 25.0,
+                  ),
+                  Text(
+                    'New Products',
+                    style: TextStyle(
+                      fontSize: 30.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(
+              height: 20.0,
             ),
             Container(
               color: Colors.grey.shade200,
@@ -158,5 +204,28 @@ class ProductsScreen extends StatelessWidget {
             ),
           ],
         ),
+      );
+
+  Widget buildCategoryItem(DataModel model) => Stack(
+        alignment: AlignmentDirectional.bottomStart,
+        children: [
+          Image(
+            image: NetworkImage(model.image),
+            width: 100.0,
+            height: 100.0,
+            fit: BoxFit.cover,
+          ),
+          Container(
+            color: Colors.black.withOpacity(.7),
+            width: 100.0,
+            child: Text(
+              model.name,
+              textAlign: TextAlign.center,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+        ],
       );
 }
